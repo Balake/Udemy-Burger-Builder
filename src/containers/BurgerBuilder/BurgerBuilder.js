@@ -45,32 +45,43 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({loading: true})
-        // alert('You continue!')
-        // send data to backend
-        // need to target json for firebase
-        const order = {
-            ingredients: this.state.ingredients,
-            // Would need to calculate price on server so that customer doesn't manipulate requests for cheaper price
-            price: this.state.totalPrice.toFixed(2),
-            customer: {
-                name: 'Blake',
-                address: {
-                    street: 'street',
-                    zipcode: '98105',
-                    country: 'USA'
-                },
-                email: 'test@test.com'
-            },
-            deliveryMethod: 'AS FAST AS POSSIBLE'
+        // this.setState({loading: true})
+        // // alert('You continue!')
+        // // send data to backend
+        // // need to target json for firebase
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     // Would need to calculate price on server so that customer doesn't manipulate requests for cheaper price
+        //     price: this.state.totalPrice.toFixed(2),
+        //     customer: {
+        //         name: 'Blake',
+        //         address: {
+        //             street: 'street',
+        //             zipcode: '98105',
+        //             country: 'USA'
+        //         },
+        //         email: 'test@test.com'
+        //     },
+        //     deliveryMethod: 'AS FAST AS POSSIBLE'
+        // }
+        // axios.post('/orders.json', order)
+        //     .then(response => {
+        //         this.setState({loading: false, purchasing: false})
+        //     })
+        //     .catch(error => {
+        //         this.setState({loading: false, purchasing: false})
+        //     })
+        const queryParams = []
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))   
         }
-        axios.post('/orders.json', order)
-            .then(response => {
-                this.setState({loading: false, purchasing: false})
-            })
-            .catch(error => {
-                this.setState({loading: false, purchasing: false})
-            })
+        queryParams.push("price=" + this.state.totalPrice);
+        const queryString = queryParams.join('&')
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        })
     }
 
     updatePurchaseState  = (updatedIngredients) => {
